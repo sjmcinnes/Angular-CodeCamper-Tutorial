@@ -19,6 +19,7 @@
             getMessageCount: getMessageCount,
             getSessionPartials: getSessionPartials,
             getSpeakerPartials: getSpeakerPartials,
+            getAttendees: getAttendees,
             prime: prime
         };
 
@@ -114,6 +115,24 @@
                 speakers = data.results;
                 log('Retrieved [Speaker Partials] from remote data source', speakers.length, true);
                 return speakers;
+            }
+        }
+
+        function getAttendees() {
+            var orderBy = 'firstName, lastName';
+            var attendees = [];
+
+            return EntityQuery.from('Persons')
+                .select('id, firstName, lastName, imageSource')
+                .orderBy(orderBy)
+                .toType('Person')
+                .using(manager).execute()
+                .then(querySucceeded, _queryFailed);
+
+            function querySucceeded(data) {
+                attendees = data.results;
+                log('Retrieved [Attendees] from remote data source', attendees.length, true);
+                return attendees;
             }
         }
 

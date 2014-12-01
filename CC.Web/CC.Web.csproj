@@ -120,8 +120,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\attendee\attendees.html" />
+    <Content Include="app\attendee\attendees.js" />
     <Content Include="app\services\model.js" />
     <Content Include="app\sessions\sessions.js" />
+    <Content Include="app\speaker\speakers.html" />
+    <Content Include="app\speaker\speakers.js" />
     <Content Include="App_Data\.gitignore" />
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
