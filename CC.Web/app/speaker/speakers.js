@@ -15,6 +15,7 @@
 
         vm.title = 'speakers';
         vm.speakers = [];
+        vm.refresh = refresh;
         activate();
 
         function activate() {
@@ -22,10 +23,12 @@
                 .then(function () { log('Activated Speakers View'); });
         }
 
-        function getSpeakers() {
-            return datacontext.getSpeakerPartials().then(function(data) {
+        function getSpeakers(forceRefresh) {
+            return datacontext.getSpeakerPartials(forceRefresh).then(function(data) {
                 return vm.speakers = data;
             });
         }
+
+        function refresh() { getSpeakers(true); }
     }
 })();

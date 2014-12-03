@@ -15,6 +15,7 @@
 
         vm.title = 'attendees';
         vm.attendees = [];
+        vm.refresh = refresh;
         activate();
 
         function activate() {
@@ -22,11 +23,15 @@
                 .then(function () { log('Activated Attendees View'); });
         }
 
-        function getAttendees() {
-            return datacontext.getAttendees().then(
+        function getAttendees(forceRefresh) {
+            return datacontext.getAttendees(forceRefresh).then(
                 function (data) {
                 return vm.attendees = data;
             });
+        }
+
+        function refresh() {
+            getAttendees(true);
         }
     }
 })();
