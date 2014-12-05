@@ -54,6 +54,13 @@
                     }
                 }
             }, {
+                url: '/sessions/search/:search',
+                config: {
+                    title: 'sessions-search',
+                    templateUrl: 'app/sessions/sessions.html',
+                    settings: {}
+                }
+            }, {
                 url: '/speakers',
                 config: {
                     title: 'speakers',

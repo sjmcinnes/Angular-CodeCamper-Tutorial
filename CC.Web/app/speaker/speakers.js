@@ -30,5 +30,6 @@
         }
 
         function refresh() { getSpeakers(true); }
+
     }
 })();

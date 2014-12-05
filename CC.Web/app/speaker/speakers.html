@@ -3,6 +3,12 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="form-search">
+                    <input class="input-lg search-query"
+                           data-ng-model="vm.speakerSearch.firstName"
+                           placeholder="Search by First Name..." />
+                    <input class="input-lg search-query" 
+                           data-ng-model="vm.speakerSearch.lastName"
+                           placeholder="Search by Last Name..."/>
                     <div class="btn-group pull-right">
                         <a class="btn btn-info"
                            data-ng-click="vm.refresh()"><i class="fa fa-refresh"></i><span>Refresh</span></a>
@@ -11,7 +17,7 @@
                 <div class="widget wviolet">
                     <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.speakers.length}}"></div>
                     <div class="widget-content user">
-                        <div class="padd list-flow" data-ng-repeat="s in vm.speakers">
+                        <div class="padd list-flow" data-ng-repeat="s in vm.speakers | filter:vm.speakerSearch">
                             <div class="user">
                                 <img data-cc-img-person="{{s.imageSource}}"
                                      class="img-polaroid stacked" />

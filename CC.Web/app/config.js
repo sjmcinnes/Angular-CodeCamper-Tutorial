@@ -15,6 +15,24 @@
         unknownPersonImageSource: 'unknown_person.jpg'
     };
 
+    var keyCodes = {
+        backspace: 8,
+        tab: 9,
+        enter: 13,
+        esc: 27,
+        space: 32,
+        pageUp: 33,
+        pageDown: 34,
+        end: 35,
+        home: 36,
+        left: 37,
+        right: 39,
+        down: 40,
+        up: 38,
+        insert: 45,
+        del: 46
+    };
+
     var events = {
         controllerActivateSuccess: 'controller.activateSuccess',
         spinnerToggle: 'spinner.toggle'
@@ -25,6 +43,7 @@
         docTitle: 'CC: ',
         events: events,
         imageSettings: imageSettings,
+        keyCodes: keyCodes,
         remoteServiceName: remoteServiceName,
         version: '2.1.0'
     };
@@ -37,6 +56,8 @@
             $logProvider.debugEnabled(true);
         }
     }]);
+
+
     
     //#region Configure the common services via commonConfig
     app.config(['commonConfigProvider', function (cfg) {

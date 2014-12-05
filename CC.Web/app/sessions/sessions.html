@@ -3,15 +3,19 @@
         <div class="container">
             <div class="row">
                 <div class="form-search">
+                    <input class="input-lg search-query"
+                           data-ng-model="vm.sessionsSearch"
+                           data-ng-keyup="vm.search($event)"
+                           placeholder="Filter room, speaker, tag, title or track" />
                     <div class="btn-group pull-right">
                         <a class="btn btn-info"
                            data-ng-click="vm.refresh()"><i class="fa fa-refresh"></i><span>Refresh</span></a>
                     </div>
                 </div>
                 <div class="widget worange">
-                    <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.sessions.length}}"></div>
+                    <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.filteredSessions.length}} \ {{vm.sessions.length}}"></div>
                     <div class="widget-content user">
-                        <div class="padd" data-ng-repeat="s in vm.sessions">
+                        <div class="padd" data-ng-repeat="s in vm.filteredSessions">
                             <div class="user">
                                 <img data-cc-img-person="{{s.speaker.imageSource}}" 
                                      class="img-polaroid user-pic" />
