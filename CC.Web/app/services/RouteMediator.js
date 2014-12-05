@@ -29,7 +29,9 @@
                     if (handleRouteChangeError) { return; }
 
                     handleRouteChangeError = true;
-                    var msg = 'Error routing: ' + (current && current.name);
+                    var msg = 'Error routing: ' + 
+                        (current && current.name) +
+                        '. ' + (rejection.msg || '');
                     logger.logWarning(msg, current, serviceId, true);
                     $location.path('/');
                 });

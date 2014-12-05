@@ -21,7 +21,6 @@
     app.run(['$route', 'breeze', 'datacontext','routeMediator',
         function ($route, breeze, datacontext, routeMediator) {
             // Include $route to kick start the router.
-            datacontext.prime();
             routeMediator.setRoutingHandlers();
         }]);
 
