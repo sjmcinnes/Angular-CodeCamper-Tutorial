@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'datacontext';
-    angular.module('app').factory(serviceId, ['common', 'entityManagerFactory', 'model', datacontext]);
+    angular.module('app').factory(serviceId, ['common', 'entityManagerFactory', 'model', 'config', datacontext]);
 
-    function datacontext(common, emFactory, model) {
+    function datacontext(common, emFactory, model, config) {
         var EntityQuery = breeze.EntityQuery;
         var entityNames = model.entityNames;
         var getLogFn = common.logger.getLogFn;
@@ -12,6 +12,7 @@
         var logError = getLogFn(serviceId, 'error');
         var logSuccess = getLogFn(serviceId, 'success');
         var manager = emFactory.newManager();
+        var speakerCount = 0;
         var primePromise;
         var storeMeta = {
             isLoaded: {
@@ -26,9 +27,9 @@
             getAttendees: getAttendees,
             getAttendeeCount: getAttendeeCount,
             getAttendeeFilteredCount: getAttendeeFilteredCount,
-            getPeople: getPeople,
-            getMessageCount: getMessageCount,
+            getSessionCount: getSessionCount,
             getSessionPartials: getSessionPartials,
+            getSpeakerCount: getSpeakerCount,
             getSpeakerPartials: getSpeakerPartials,
             prime: prime
         };
@@ -87,21 +88,6 @@
             .executeLocally();
         }
 
-        function getMessageCount() { return $q.when(72); }
-
-        function getPeople() {
-            var people = [
-                { firstName: 'John', lastName: 'Papa', age: 25, location: 'Florida' },
-                { firstName: 'Ward', lastName: 'Bell', age: 31, location: 'California' },
-                { firstName: 'Colleen', lastName: 'Jones', age: 21, location: 'New York' },
-                { firstName: 'Madelyn', lastName: 'Green', age: 18, location: 'North Dakota' },
-                { firstName: 'Ella', lastName: 'Jobs', age: 18, location: 'South Dakota' },
-                { firstName: 'Landon', lastName: 'Gates', age: 11, location: 'South Carolina' },
-                { firstName: 'Haley', lastName: 'Guthrie', age: 35, location: 'Wyoming' }
-            ];
-            return $q.when(people);
-        }
-
         function getSpeakerPartials(forceRefresh) {
             var predicate = breeze.Predicate.create('isSpeaker', '==', true);
             var speakerOrderBy = 'firstName, lastName';
@@ -121,6 +107,7 @@
 
             function querySucceeded(data) {
                 speakers = data.results;
+                speakerCount = speakers.length;
                 for (var i = speakers.length; i--;) {
                     speakers[i].isSpeaker = true;
                 }
@@ -174,9 +161,11 @@
                 return $q.when(_getLocalEntityCount(entityNames.attendee));
             }
 
-            return EntityQuery.from(entityNames.attendee)
-                .using(manager).execute
-                .to$q(_getInlineCount);
+            return EntityQuery.from('Persons')
+                .take(0)
+                .inlineCount()
+                .using(manager).execute()
+                .then(_getInlineCount, _queryFailed);
         }
 
         function getAttendeeFilteredCount(nameFilter) {
@@ -190,16 +179,37 @@
             return attendees.length;
         }
 
+        function getSessionCount() {
+            if (_areSessionsLoaded()) {
+                return $q.when(_getLocalEntityCount(entityNames.session));
+            }
+
+            return EntityQuery.from('Sessions')
+                .take(0)
+                .inlineCount()
+                .using(manager).execute()
+                .then(_getInlineCount, _queryFailed);
+
+            //return EntityQuery.from('Sessions')
+            //    .using(manager).execute()
+            //    .then(_getInlineCount, _queryFailed);
+        }
+
+        function getSpeakerCount() {
+            return $q.when(speakerCount);
+        }
+
         function _getLocalEntityCount(entityName) {
-            var entityCount = EntityQuery.from(entityName)
+            var entities = EntityQuery.from(entityName)
                 .using(manager)
                 .executeLocally();
 
-            return entityCount.length;
+            return entities.length;
         }
 
         function _getInlineCount(data) {
             return data.inlineCount;
+            //return data.results.length;
         }
 
         function _fullNamePredicate(filterValue) {
@@ -244,7 +254,7 @@
         }
 
         function _queryFailed(error) {
-            var nsg = config.appErrorPrefix + 'Error retrieving data. ' + error.message;
+            var msg = config.appErrorPrefix + 'Error retrieving data. ' + error.message;
             logError(msg, error);
             throw error;
         }

@@ -57,6 +57,7 @@
             if ($event.keyCode === keyCodes.esc) {
                 vm.attendeeSearch = '';
             }
+            vm.paging.currentPage = 1;
             getAttendees();
         }
 
