@@ -31,8 +31,10 @@
             getSessionPartials: getSessionPartials,
             getSpeakerCount: getSpeakerCount,
             getSpeakerPartials: getSpeakerPartials,
+            getSpeakersLocal: getSpeakersLocal,
+            getTrackCounts: getTrackCounts,
             prime: prime
-        };
+        }; 
 
         return service;
 
@@ -193,6 +195,32 @@
             //return EntityQuery.from('Sessions')
             //    .using(manager).execute()
             //    .then(_getInlineCount, _queryFailed);
+        }
+
+        function getTrackCounts() {
+            return getSessionPartials().then(function (data) {
+                var sessions = data;
+                var trackMap = sessions.reduce(function (accum, session) {
+                    var trackname = session.track.name;
+                    var trackId = session.track.id;
+                    if (accum[trackId - 1]) {
+                        accum[trackId - 1].count++;
+                    } else {
+                        accum[trackId - 1] = {
+                            track: trackname,
+                            count: 1
+                        };
+                    }
+                    return accum;
+                }, []);
+                return trackMap;
+            });
+        }
+
+        function getSpeakersLocal() {
+            var orderBy = 'lastName, firstName';
+            var predicate = breeze.Predicate.create('isSpeaker', '==', true);
+            return _getAllLocal(entityNames.speaker, orderBy, predicate);
         }
 
         function getSpeakerCount() {
